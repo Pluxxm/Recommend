@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:id="@+id/linearLayout"
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <LinearLayout
+        android:id="@+id/return_header"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="#9bc8ea">
+        <Button
+            android:id="@+id/btn_return"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_gravity="center_vertical"
+            android:text="返  回"
+            android:textColor="#000000"
+            android:background="#ffffff"/>
+    </LinearLayout>
+
+</LinearLayout>
