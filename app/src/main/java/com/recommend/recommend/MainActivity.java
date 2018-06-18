@@ -45,7 +45,7 @@ public class MainActivity extends Activity implements View.OnClickListener {
     private SelectFragment selectFragment;  //TODO 筛选页面
     private SearchFragment searchFragment;  //TODO 搜索页面
    //public ScreenFragment screenFragment;  //TODO 筛选后页面
-    public ArrayList<Course> screenResult = new ArrayList<>();  //TODO 筛选结果存储
+    public static ArrayList<Course> screenResult = new ArrayList<>();  //TODO 筛选结果存储
 
 
     @Override

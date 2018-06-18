@@ -2,7 +2,12 @@ package com.recommend.recommend.fragment;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.ProgressDialog;
+import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +24,7 @@ import com.recommend.recommend.Course;
 import com.recommend.recommend.CourseScreening;
 import com.recommend.recommend.MainActivity;
 import com.recommend.recommend.R;
+import com.recommend.recommend.ScreenActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +46,22 @@ public class SelectFragment extends Fragment {
     private ScreenFragment screenFragment;
     //private SearchFragment searchFragment;
     private ArrayList<Course> screenResult;
+
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            switch (msg.what){
+                case 1:
+                    if (progressDialog != null)
+                        progressDialog.cancel();
+                    if (task != null)
+                        task.cancel(true);
+            }
+        }
+    };
+    private ProgressDialog progressDialog;
+    private AsyncTask task;
 
     @Nullable
     @Override
@@ -137,30 +159,69 @@ public class SelectFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 keyWord =  et_keyword.getText().toString();
-                new Thread() {
-                    public void run() {
-                        //Toast.makeText(SelectFragment.this.getActivity(), timeAdapter.toString(), Toast.LENGTH_SHORT).show();
-                        screenResult = courseScreening.screening(keyWord, type);
-                        subThreadIsCompleted = true;
-                    }
-                }.start();
-                while (subThreadIsCompleted == false);
-                //TODO 将screenResult传到MainActivity
-                ((MainActivity)getActivity()).setScreenResult(screenResult);
-                Log.i("TRANS",screenResult.get(0).getName());
-                Log.i("TRANS","已经将screenResult传到MainActivity");
 
-                fm.beginTransaction()
-                        .replace(R.id.container_content, screenFragment)
-                        .commit();
+                task = new AsyncTask(){
+
+                    @Override
+                    protected void onPreExecute() {
+                        Log.d("MainActivity","onPreExecute");
+                        super.onPreExecute();
+                        progressDialog = ProgressDialog.show(getActivity(),"课程表","正在加载");
+                        handler.sendMessageDelayed(handler.obtainMessage(1),5000);
+
+                    }
+
+                    @Override
+                    protected void onPostExecute(Object o) {
+                        Log.d("MainActivity","onPostExecute");
+                        super.onPostExecute(o);
+                        if (progressDialog != null){
+                            progressDialog.cancel();
+                            progressDialog = null;
+                        }
+                        if (screenResult == null || screenResult.size() == 0){
+                            selectEmpty();
+                            return;
+                        }
+                        ((MainActivity)getActivity()).setScreenResult(screenResult);
+//                        fm.beginTransaction()
+//                                .replace(R.id.container_content, screenFragment)
+//                                .commit();
+                        Intent intent = new Intent(getActivity(), ScreenActivity.class);
+                        startActivity(intent);
+                    }
+
+                    @Override
+                    protected Object doInBackground(Object[] objects) {
+                        screenResult = courseScreening.screening(keyWord, type);
+                        return null;
+                    }
+                };
+                task.execute();
+
+//                new Thread() {
+//                    public void run() {
+//                        //Toast.makeText(SelectFragment.this.getActivity(), timeAdapter.toString(), Toast.LENGTH_SHORT).show();
+//                        screenResult = courseScreening.screening(keyWord, type);
+//                        subThreadIsCompleted = true;
+//                    }
+//                }.start();
+//                while (subThreadIsCompleted == false);
+                //TODO 将screenResult传到MainActivity
+//                Log.i("TRANS",screenResult.get(0).getName());
+//                Log.i("TRANS","已经将screenResult传到MainActivity");
             }
         });
         btn_import.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SelectFragment.this.getActivity(),"已导入个人课表",Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(),"已导入个人课表",Toast.LENGTH_SHORT).show();
             }
         });
         return view;
+    }
+
+    private void selectEmpty(){
+        Toast.makeText(getActivity(),"筛选课程为空！",Toast.LENGTH_SHORT).show();
     }
 }

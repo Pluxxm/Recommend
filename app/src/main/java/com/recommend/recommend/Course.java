@@ -1,6 +1,7 @@
 package com.recommend.recommend;
 
 public class Course {
+
         public String name;
         public String type;
         public String day;
