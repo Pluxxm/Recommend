@@ -19,7 +19,11 @@ public class CourseScreening {
 	public ArrayList<Course> screening(String keyWord, String type) {
 		String sql = "select Courses.* from Courses left join TimeTable using (day, startTime, endTime) where TimeTable.name is NULL";
 		for(int i = 0; i < exceptCourseTime.size(); ++i) {
-		  sql = "select * from ("+ sql + ") as exceptCourseTime" + i +" where exceptCourseTime" + i +" .day !='" + exceptCourseTime.get(i).day + "' and exceptCourseTime" + i +" .startTime !=" + exceptCourseTime.get(i).startTime +  " and exceptCourseTime" + i +" .endTime !=" + exceptCourseTime.get(i).endTime;
+		  sql = "select * from ("+ sql + ") as exceptCourseTime" + i
+				  +" where exceptCourseTime" + i +" .day !='"
+				  + exceptCourseTime.get(i).day + "' and exceptCourseTime" + i +" .startTime !="
+				  + exceptCourseTime.get(i).startTime +  " and exceptCourseTime" + i +" .endTime !="
+				  + exceptCourseTime.get(i).endTime;
 		}
 		sql = "select * from (" + sql + ") as Final where Final.name like '%"+keyWord+"%' and Final.type = '" + type + "';";
 		DBManager db = DBManager.createInstance();

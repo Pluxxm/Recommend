@@ -3,4 +3,9 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+    <color name="returnItem">#9BC8EA</color>
+    <color name="social">#7BBFC0</color>
+    <color name="science">#F6CF94</color>
+    <color name="culture">#E59CA5</color>
+    <color name="white">#FFFFFF</color>
 </resources>
